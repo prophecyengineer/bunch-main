@@ -11,7 +11,7 @@ import {
   useMantineTheme,
 } from "@mantine/core";
 
-export default function Appshell() {
+export default function Appshell(props) {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   return (
@@ -69,7 +69,7 @@ export default function Appshell() {
         </Header>
       }
     >
-      <Text>Resize app to see responsive navbar in action</Text>
+      {props.children}
     </AppShell>
   );
 }
