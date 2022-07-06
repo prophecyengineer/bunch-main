@@ -9,6 +9,8 @@ import {
   Notification,
   Box,
   Alert,
+  Portal,
+  Transition,
   InputWrapper,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -20,6 +22,13 @@ import { useEffect, useState, useRef } from "react";
 import { useDebouncedValue } from "@mantine/hooks";
 
 const axios = require("axios").default;
+
+const padding = {
+  position: "fixed",
+  bottom: "0",
+  margin: "1em",
+  width: "-webkit-fill-available",
+};
 
 export default function Username() {
   const [username, setUsername] = useState("");
@@ -92,29 +101,50 @@ export default function Username() {
   };
 
   return (
-    <Box>
-      <form onSubmit={form.onSubmit((values) => console.log(values))}>
-        <InputWrapper
-          required
-          label="Choose a cool username"
-          description="these custom letters will become your url "
-          error={!usernameChecker && "taken"}
+    <>
+      <Portal zIndex={5}>
+        <Transition
+          mounted={!usernameChecker}
+          transition="slide-up"
+          duration={400}
+          timingFunction="ease"
         >
-          <TextInput
-            ref={ref}
+          {(styles) => (
+            <div style={{ ...styles, ...padding }}>
+              <Notification icon={<X size={18} />} color="red">
+                Bummer! Notification without title
+              </Notification>
+            </div>
+          )}
+        </Transition>
+      </Portal>
+
+      <Box>
+        <form onSubmit={form.onSubmit((values) => console.log(values))}>
+          <InputWrapper
             required
-            label="username"
-            onChange={(event) => setUsername(event.currentTarget.value)}
-            placeholder="username"
-          />
-        </InputWrapper>
-        <Group position="right" mt="md">
-          <Button type="submit" fullWidth>
-            make this username yours
-          </Button>
-          <Button onClick={checkExisting}>check that username</Button>
-        </Group>
-      </form>
-    </Box>
+            label="Choose a cool username"
+            description="these custom letters will become your url "
+          >
+            <TextInput
+              error={!usernameChecker}
+              required
+              label="username"
+              onChange={(event) => setUsername(event.currentTarget.value)}
+              placeholder="username"
+            />
+          </InputWrapper>
+          <Group position="right" mt="md">
+            <Button
+              disabled={!usernameChecker || debouncedUsername.length === 0}
+              fullWidth
+            >
+              make this username yours
+            </Button>
+            {/* <Button onClick={checkExisting}>check that username</Button> */}
+          </Group>
+        </form>
+      </Box>
+    </>
   );
 }
