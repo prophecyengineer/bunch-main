@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 // import Layout from "../Layout";
 // import { UserProvider } from "../../../context/user";
 import Appshell from "./Appshell";
+import PreLoginShell from "./PreLoginShell";
+import { UserProvider } from "../../context/user";
 
 export default function Wrapper(props) {
   const session = useSession();
@@ -14,11 +16,11 @@ export default function Wrapper(props) {
     session === null ||
     router.pathname === "/" ||
     router.pathname === "/signin" ||
-    router.pathname === "/signup/Email" ||
-    router.pathname === "/signup/Username" ||
-    router.pathname === "/signup/Profile"
+    router.pathname === "/Onboarding/Email" ||
+    router.pathname === "/Onboarding/Username" ||
+    router.pathname === "/Onboarding/Profile"
   ) {
-    return <>{props.children}</>;
+    return <PreLoginShell>{props.children}</PreLoginShell>;
   }
   if (
     (session !== null && session?.status === "authenticated") ||
@@ -26,9 +28,9 @@ export default function Wrapper(props) {
   ) {
     return (
       <>
-        {/* <UserProvider> */}
-        <Appshell>{props.children}</Appshell>
-        {/* </UserProvider> */}
+        <UserProvider>
+          <Appshell>{props.children}</Appshell>
+        </UserProvider>
       </>
     );
   }

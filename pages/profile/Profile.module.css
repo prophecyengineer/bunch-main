@@ -1,0 +1,70 @@
+.title {
+  overflow: auto;
+}
+
+.avatar {
+  margin-bottom: 10px;
+  border: solid white 3px;
+}
+
+.title {
+  margin-bottom: -20px;
+  font-weight: bolder;
+}
+
+.userDetails {
+  padding-top: 70px;
+}
+
+/* .hero {
+  max-height: 170px;
+  overflow: hidden;
+  width: 120%;
+  margin-left: -35px;
+  background-size: contain;
+
+  background-position: center bottom;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  display: block;
+
+  top: 0;
+
+  border-radius: 0 0 50% 50%/0 0 100% 100%;
+}
+.heroWrapper {
+  justify-content: center;
+  margin-top: -50px;
+  width: 100vw;
+  overflow: hidden;
+  align-items: center;
+} */
+
+.smallButton {
+  font-size: 13px !important;
+  width: 100%;
+  color: rgb(109, 109, 109);
+}
+
+.mediumButton {
+  width: 100% !important;
+}
+
+.private {
+  height: 300px;
+  z-index: 1;
+  bottom: 0 !important;
+  z-index: 1;
+  position: fixed !important;
+  overflow: hidden !important;
+
+  color: #94a1b2;
+  margin-left: -20px;
+  background-color: #16161abb !important;
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+  border: 1px solid #464752;
+  width: 100vw !important;
+}
