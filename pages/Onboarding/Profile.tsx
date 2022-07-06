@@ -59,6 +59,9 @@ export default function Profile() {
   });
 
   const onFinish = async () => {
+    const name = form.values.name;
+    const bio = form.values.bio;
+
     const data = {
       username: username,
       name: name,
@@ -68,7 +71,7 @@ export default function Profile() {
 
     if (data !== null) {
       try {
-        await axios.post("/api/auth/signup/signup-profile", data);
+        await axios.post("/api/signup/signup-profile", data);
         console.log("data", data);
       } finally {
         router.push("/profile");

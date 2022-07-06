@@ -3,6 +3,8 @@ import type { NextPage } from "next";
 import styles from "./Profile.module.css";
 import React, { useRef } from "react";
 import { useSession } from "next-auth/react";
+import { Photo, MessageCircle, Settings, Lock } from "tabler-icons-react";
+
 import {
   Modal,
   Button,
@@ -11,12 +13,13 @@ import {
   Input,
   Image,
   Space,
+  Text,
   Card,
   Tabs,
   Avatar,
   List,
+  Title,
 } from "@mantine/core";
-import { MoreOutline, EditFill, PictureOutline } from "antd-mobile-icons";
 import "react-activity-feed/dist/index.css";
 import {
   StreamApp,
@@ -48,7 +51,7 @@ const Profile: NextPage = (props) => {
   const [image, setImage] = useState([]);
   const { user } = useUserState();
   const session = useSession();
-  console.log("session", session);
+  console.log("session", user);
 
   const stream = require("getstream");
   const userToken = session.data?.user?.userToken;
@@ -73,68 +76,35 @@ const Profile: NextPage = (props) => {
   }
 
   const web3client = new Web3Storage({ token: getAccessToken() });
-  const ref = useRef<HTMLInputElement | null>(null);
-  const PicUploader = () => {
-    const [fileList, setFileList] = useState<ImageUploadItem[]>([
-      {
-        url: demoSrc,
-      },
-    ]);
 
-    return (
-      <div
-        style={{
-          width: 80,
-          height: 80,
-          borderRadius: 40,
-          backgroundColor: "#f5f5f5",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          color: "#999999",
-        }}
-      >
-        <input
-          className="inputimage"
-          type="file"
-          id="input"
-          name="file"
-          ref={ref}
-          multiple
-        />
-        <PictureOutline style={{ fontSize: 32 }} />
-      </div>
-    );
-  };
+  // const handleUpload = async () => {
+  //   const imageData = ref.current.files[0].name;
+  //   var fileInput = ref.current;
+  //   console.log("fileInput.files", fileInput.files);
 
-  const handleUpload = async () => {
-    const imageData = ref.current.files[0].name;
-    var fileInput = ref.current;
-    console.log("fileInput.files", fileInput.files);
+  //   const rootCid = await web3client.put(fileInput.files, {
+  //     name: "avatar",
+  //     maxRetries: 3,
+  //   });
 
-    const rootCid = await web3client.put(fileInput.files, {
-      name: "avatar",
-      maxRetries: 3,
-    });
+  //   console.log("rootCID", rootCid);
 
-    console.log("rootCID", rootCid);
+  //   await setImage(
+  //     "https://" + `${rootCid}` + ".ipfs.dweb.link/" + `${imageData}`
+  //   );
 
-    await setImage(
-      "https://" + `${rootCid}` + ".ipfs.dweb.link/" + `${imageData}`
-    );
+  //   console.log("full res", image);
 
-    console.log("full res", image);
+  //   return { image };
+  // };
 
-    return { image };
-  };
+  // const handleNameChange = (value: React.SetStateAction<never[]>) => {
+  //   setName(value);
+  // };
 
-  const handleNameChange = (value: React.SetStateAction<never[]>) => {
-    setName(value);
-  };
-
-  const handleBioChange = (value: React.SetStateAction<never[]>) => {
-    setBio(value);
-  };
+  // const handleBioChange = (value: React.SetStateAction<never[]>) => {
+  //   setBio(value);
+  // };
 
   // function to to change fields to be editable
   const editProfile = () => {
@@ -209,47 +179,40 @@ const Profile: NextPage = (props) => {
       });
   };
 
-  const followerUser = (userToFollow: any) => {
-    const userOne = client.feed("home", client.userId);
-    userOne.follow("user", userToFollow);
-    UserFollowing();
-    UserFollowers();
-  };
+  // const followerUser = (userToFollow: any) => {
+  //   const userOne = client.feed("home", client.userId);
+  //   userOne.follow("user", userToFollow);
+  //   UserFollowing();
+  //   UserFollowers();
+  // };
 
-  const unfollowerUser = (userToUnFollow: any) => {
-    const userOne = client.feed("home", client.userId);
-    userOne.unfollow("user", userToUnFollow, { keepHistory: true });
-    UserFollowing();
-    UserFollowers();
-  };
+  // const unfollowerUser = (userToUnFollow: any) => {
+  //   const userOne = client.feed("home", client.userId);
+  //   userOne.unfollow("user", userToUnFollow, { keepHistory: true });
+  //   UserFollowing();
+  //   UserFollowers();
+  // };
 
   return (
     <>
       <div className={styles.container}>
-        <Button
+        {/* <Button
           onClick={() => {
             saveProfile();
           }}
         >
           edit profile
-        </Button>
+        </Button> */}
 
         {readOnlyEditState ? (
           <>
-            {/* <Space className={styles.userDetails} block justify="center">
-              <Avatar
-                className={styles.avatar}
-                src={user?.data?.image}
-              ></Avatar>
-            </Space> */}
+            <Avatar className={styles.avatar} src={user?.data?.image}></Avatar>
 
-            {/* <Space block justify="center" className={styles.title}>
-              <h1>{user?.data?.name}</h1>
-            </Space> */}
-            {/* <Space block justify="center">
-              <p>{user?.data?.bio}</p>
-            </Space> */}
-            <Grid columns={3}>
+            <Title>{user?.data?.name}</Title>
+
+            <Text>{user?.data?.bio}</Text>
+
+            {/* <Grid columns={3}>
               <Button
                 className={styles.smallButton}
                 onClick={() => {
@@ -268,8 +231,8 @@ const Profile: NextPage = (props) => {
                     }}
                   >
                     followers {followerListState.length}
-                  </Button>
-                  {/* <Popup
+                  </Button> */}
+            {/* <Popup
                       visible={followersVisible}
                       onMaskClick={() => {
                         setFollowersVisible(false);
@@ -296,11 +259,11 @@ const Profile: NextPage = (props) => {
                         </Card>
                       ))}
                     </Popup> */}
-                </>
+            {/* </>
               </div>
 
               <Button className={styles.smallButton}>subscribers </Button>
-            </Grid>
+            </Grid> */}
             <>
               {/* <Popup
                 visible={followingVisible}
@@ -396,8 +359,11 @@ const Profile: NextPage = (props) => {
               )}
             </Card>
 
-            {/* <Tabs defaultActiveKey="1">
-              <Tabs.Tab title="Public Feed" key="1">
+            <Tabs>
+              <Tabs.Tab
+                label="Public Feed"
+                icon={<Photo size={18} strokeWidth={1} color={"white"} />}
+              >
                 <StreamApp apiKey={apiKey} appId={appId} token={userToken}>
                   <FlatFeed
                     notify
@@ -477,7 +443,11 @@ const Profile: NextPage = (props) => {
                   />
                 </StreamApp>
               </Tabs.Tab>
-              <Tabs.Tab title="Private Feed" key="2">
+              <Tabs.Tab
+                key="2"
+                label="Private Feed"
+                icon={<Lock size={18} strokeWidth={1} color={"white"} />}
+              >
                 <div className={styles.private} />
                 <StreamApp apiKey={apiKey} appId={appId} token={userToken}>
                   <FlatFeed
@@ -558,11 +528,11 @@ const Profile: NextPage = (props) => {
                   />
                 </StreamApp>
               </Tabs.Tab>
-            </Tabs> */}
+            </Tabs>
           </>
         ) : (
           <>
-            <div className={styles.userDetails} block justify="center">
+            <div className={styles.userDetails} justify="center">
               {/* <Form name="form" onFinish={onFinish}>
                 <div>
                   <div className="spacer-medium"></div>
