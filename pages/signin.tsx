@@ -34,11 +34,6 @@ const Signin: NextPage = () => {
   //   router.push("/");
   // };
 
-  // // const onFinish = (values: any) => {
-  // //   Dialog.alert({
-  // //     content: <pre>{JSON.stringify(values, null)}</pre>,
-  // //   });
-  // // };
   const form = useForm({
     initialValues: {
       username: "",

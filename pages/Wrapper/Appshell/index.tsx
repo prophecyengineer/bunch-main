@@ -9,7 +9,9 @@ import {
   MediaQuery,
   Burger,
   useMantineTheme,
+  Button,
 } from "@mantine/core";
+import { signOut } from "next-auth/react";
 
 export default function Appshell(props) {
   const theme = useMantineTheme();
@@ -34,7 +36,7 @@ export default function Appshell(props) {
           hidden={!opened}
           width={{ sm: 200, lg: 300 }}
         >
-          <Text>Application navbar</Text>
+          <Button onClick={signOut}>Sign out</Button>
         </Navbar>
       }
       aside={
