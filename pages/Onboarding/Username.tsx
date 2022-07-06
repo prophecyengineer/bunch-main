@@ -17,24 +17,38 @@ import { AlertCircle, Check, X } from "tabler-icons-react";
 import styles from "../../styles/Home.module.css";
 import router from "next/router";
 import { useEffect, useState, useRef } from "react";
+import { useDebouncedValue } from "@mantine/hooks";
 
 const axios = require("axios").default;
 
 export default function Username() {
   const [username, setUsername] = useState("");
-  const [usernameChecker, setUsernameChecker] = useState("");
+  const [usernameChecker, setUsernameChecker] = useState(true);
+  const [debouncedUsername] = useDebouncedValue(username, 200);
 
   const ref = useRef();
 
   // const debouncedSave = useRef(debounce(() => checkExisting(), 1000)).current;
 
-  // const handleUsernameChange = (value) => {
-  //   setUsername(value);
-  // };
+  const handleUsernameChange = async (username: string) => {
+    const res = await axios.post("/api/checkExisting", {
+      query: { username },
+    });
+    console.log("res", res);
+    res.data.result !== null
+      ? setUsernameChecker(false)
+      : setUsernameChecker(true);
+  };
 
-  // useEffect(() => {
-  //   setTimeout(() => checkExisting(), 1000);
-  // }, [username]);
+  useEffect(() => {
+    // checkhere
+    console.log("debouncedUsername", debouncedUsername);
+    handleUsernameChange(debouncedUsername);
+  }, [debouncedUsername]);
+
+  //usestate unavailble username should be available by default
+  //when stop typing debounce call
+  // if returns something, update state to username unavailable
 
   const checkExisting = async () => {
     const inputvalue = form.values.username;
@@ -78,44 +92,20 @@ export default function Username() {
   };
 
   return (
-    // <Form
-    //   name="form"
-    //   onFinish={onFinish}
-    //   footer={
-    //     <>
-    //       <div />
-    //       <div className="spacer-small" />
-    //       <Button block type="submit" color="primary" size="large">
-    //         reserve username
-    //       </Button>
-    //     </>
-    //   }
-    // >
-
-    //     <Input
-    //       type="text"
-    //       name="username"
-    //       value={username}
-    //       onChange={handleUsernameChange}
-    //       placeholder="username"
-    //     />
-
-    // </Form>
-
     <Box>
       <form onSubmit={form.onSubmit((values) => console.log(values))}>
         <InputWrapper
           required
           label="Choose a cool username"
           description="these custom letters will become your url "
-          error={usernameChecker}
+          error={!usernameChecker && "taken"}
         >
           <TextInput
             ref={ref}
             required
             label="username"
+            onChange={(event) => setUsername(event.currentTarget.value)}
             placeholder="username"
-            {...form.getInputProps("username")}
           />
         </InputWrapper>
         <Group position="right" mt="md">

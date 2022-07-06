@@ -15,24 +15,10 @@ import {
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
-import { EyeInvisibleOutline, EyeOutline } from "antd-mobile-icons";
-import { redirect } from "next/dist/server/api-utils";
-import styles from "../styles/Home.module.css";
-import { GridItem } from "antd-mobile/es/components/grid/grid";
 const Signin: NextPage = () => {
   const [loginError, setLoginError] = useState("");
-
-  // const [visible, setVisible] = useState(false);
   const router = useRouter();
   const session = useSession();
-
-  // if (session !== null && session?.status === "authenticated") {
-  //   router.push("/home");
-  // }
-
-  // const back = () => {
-  //   router.push("/");
-  // };
 
   const form = useForm({
     initialValues: {
@@ -87,65 +73,6 @@ const Signin: NextPage = () => {
         </Group>
       </form>
     </Box>
-
-    // <>
-    //   <NavBar onBack={back}>Log In</NavBar>
-
-    //   <Form
-    //     name="form"
-    //     onFinish={onFinish}
-    //     footer={
-    //       <>
-    //         <div />
-    //         <div className="spacer-small" />
-    //         <Button block type="submit" color="primary" size="large">
-    //           Log in
-    //         </Button>
-    //       </>
-    //     }
-    //   >
-    //     <Form.Item
-    //       rules={[{ required: true }]}
-    //       name="username"
-    //       // label="username"
-    //       help="please type "
-    //     >
-    //       <Input
-    //         className="input"
-    //         type="text"
-    //         value={username}
-    //         onChange={handleUsernameChange}
-    //         placeholder="username"
-    //         onlyShowClearWhenFocus
-    //         clearable
-    //       />
-    //     </Form.Item>
-    //     <Form.Item
-    //       rules={[{ required: true }]}
-    //       name="password"
-
-    //       // label="password"
-    //     >
-    //       <div className={styles.password}>
-    //         <Input
-    //           className={styles.inputPass}
-    //           type="password"
-    //           value={password}
-    //           onChange={handlePasswordChange}
-    //           placeholder="password"
-    //           type={visible ? "text" : "password"}
-    //         />
-    //         <div className={styles.eye}>
-    //           {!visible ? (
-    //             <EyeInvisibleOutline onClick={() => setVisible(true)} />
-    //           ) : (
-    //             <EyeOutline onClick={() => setVisible(false)} />
-    //           )}
-    //         </div>
-    //       </div>
-    //     </Form.Item>
-    //   </Form>
-    // </>
   );
 };
 
