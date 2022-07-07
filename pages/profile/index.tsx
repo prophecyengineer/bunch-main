@@ -163,23 +163,28 @@ const Profile: NextPage = (props) => {
       });
   };
 
-  // const followerUser = (userToFollow: any) => {
-  //   const userOne = client.feed("home", client.userId);
-  //   userOne.follow("user", userToFollow);
-  //   UserFollowing();
-  //   UserFollowers();
-  // };
+  const followerUser = (userToFollow: any) => {
+    const userOne = client.feed("home", client.userId);
+    userOne.follow("user", userToFollow);
+    UserFollowing();
+    UserFollowers();
+  };
 
-  // const unfollowerUser = (userToUnFollow: any) => {
-  //   const userOne = client.feed("home", client.userId);
-  //   userOne.unfollow("user", userToUnFollow, { keepHistory: true });
-  //   UserFollowing();
-  //   UserFollowers();
-  // };
+  const unfollowerUser = (userToUnFollow: any) => {
+    const userOne = client.feed("home", client.userId);
+    userOne.unfollow("user", userToUnFollow, { keepHistory: true });
+    UserFollowing();
+    UserFollowers();
+  };
 
   const getIframe = (props) => {
     console.log("JSON.parse(props?.activity?.object)", props?.activity?.object);
     return JSON.parse(props?.activity?.object)?.iframe;
+  };
+
+  const getVideo = (props) => {
+    console.log("JSON.parse(props?.activity?.object)", props?.activity?.object);
+    return JSON.parse(props?.activity?.object)?.video;
   };
 
   return (
@@ -193,26 +198,27 @@ const Profile: NextPage = (props) => {
 
             <Text>{user?.data?.bio}</Text>
 
-            {/* <Grid columns={3}>
-              <Button
-                className={styles.smallButton}
-                onClick={() => {
-                  setFollowingVisible(true);
-                }}
-              >
-                following {followingListState.length}
-              </Button>
+            <Button
+              className={styles.smallButton}
+              onClick={() => {
+                setFollowingVisible(true);
+              }}
+            >
+              {" "}
+              following {followingListState.length}
+            </Button>
+            <Button
+              className={styles.smallButton}
+              onClick={() => {
+                setFollowersVisible(true);
+              }}
+            >
+              followers {followerListState.length}
+            </Button>
+            <Link href="/profile/EditProfile">
+              <Button>Edit Profile</Button>
+            </Link>
 
-              <div>
-                <>
-                  <Button
-                    className={styles.smallButton}
-                    onClick={() => {
-                      setFollowersVisible(true);
-                    }}
-                  >
-                    followers {followerListState.length}
-                  </Button> */}
             {/* <Popup
                       visible={followersVisible}
                       onMaskClick={() => {
@@ -274,67 +280,6 @@ const Profile: NextPage = (props) => {
                 ))}
               </Popup> */}
             </>
-
-            <Card>
-              {readOnlyEditState ? (
-                <>
-                  <Link href="/profile/EditProfile">
-                    <Button>Edit Profile</Button>
-                  </Link>
-                </>
-              ) : (
-                <h1>hey im here</h1>
-                // <Form
-                //   name="form"
-                //   onFinish={onFinish}
-                //   footer={
-                //     <Button block type="submit" color="primary" size="large">
-                //       update profile
-                //     </Button>
-                //   }
-                // >
-                //   <Form.Header>Edit Profile</Form.Header>
-
-                //   <Form.Item
-                //     name="name"
-                //     label="name"
-                //     help="please type your name : John Doe "
-                //   >
-                //     <Input
-                //       type="text"
-                //       value={name}
-                //       onChange={handleNameChange}
-                //       placeholder="name"
-                //     />
-                //   </Form.Item>
-
-                //   <Form.Item
-                //     name="bio"
-                //     label="bio"
-                //     help="please type your bio"
-                //   >
-                //     <Input
-                //       type="text"
-                //       value={bio}
-                //       onChange={handleBioChange}
-                //       placeholder="bio"
-                //     />
-                //   </Form.Item>
-                //   <Form.Item
-                //     name="image"
-                //     label="image"
-                //     help="please paste your img"
-                //   >
-                //     <Input
-                //       type="text"
-                //       value={image}
-                //       onChange={handleImageChange}
-                //       placeholder="paste an image link"
-                //     />
-                //   </Form.Item>
-                // </Form>
-              )}
-            </Card>
 
             <Tabs>
               <Tabs.Tab
@@ -431,6 +376,7 @@ const Profile: NextPage = (props) => {
                                 {/* {props?.activity?.object.media && (
                                   <img src={props?.activity?.object?.media} />
                                 )} */}
+                                <iframe src={getVideo(props)} />
                                 <img src={getIframe(props)} />
                                 <Text>{props?.activity?.object}</Text>
                               </>

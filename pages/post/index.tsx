@@ -55,8 +55,31 @@ const Post = () => {
   const [name, setName] = useState("");
   const [bio, setBio] = useState("");
   const [image, setImage] = useState("");
+  const [video, setVideo] = useState("");
   const [file, setFile] = useState("");
 
+  async function handleVideoUpload() {
+    const videoData = document.getElementById("inputvideo").files[0].name;
+
+    console.log("first part", videoData.name);
+    var fileInput = document.getElementById("inputvideo");
+
+    const rootCid = await client.put(fileInput.files, {
+      name: "avatar",
+      maxRetries: 3,
+    });
+
+    setFile(rootCid);
+    console.log("rootCID", rootCid);
+
+    await setVideo(
+      "https://" + `${rootCid}` + ".ipfs.dweb.link/" + `${videoData}`
+    );
+
+    console.log("full video", video);
+
+    return { video };
+  }
   async function handleUpload() {
     const imageData = document.getElementById("input").files[0].name;
 
@@ -121,7 +144,6 @@ const Post = () => {
   return (
     <>
       <div>
-        <iframe src={image} />
         <input
           className="inputimage"
           type="file"
@@ -134,7 +156,24 @@ const Post = () => {
           onClick={() => {
             handleUpload();
           }}
-        ></Button>
+        >
+          image
+        </Button>
+        <input
+          className="inputimage"
+          type="file"
+          id="inputvideo"
+          name="file"
+          multiple
+        />
+        <Button
+          size="md"
+          onClick={() => {
+            handleVideoUpload();
+          }}
+        >
+          video
+        </Button>
 
         <form>
           <TextInput
