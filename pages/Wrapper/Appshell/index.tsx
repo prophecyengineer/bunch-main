@@ -12,6 +12,7 @@ import {
   Button,
 } from "@mantine/core";
 import { signOut } from "next-auth/react";
+import Thumb from "./ThumbBar";
 
 export default function Appshell(props) {
   const theme = useMantineTheme();
@@ -48,7 +49,7 @@ export default function Appshell(props) {
       }
       footer={
         <Footer height={60} p="md">
-          Application footer
+          <Thumb />
         </Footer>
       }
       header={

@@ -19,3 +19,7 @@
     helvetica, segoe ui, arial, roboto, "PingFang SC", "miui",
     "Hiragino Sans GB", "Microsoft Yahei", sans-serif;
 }
+
+.activity {
+  background-color: transparent !important;
+}

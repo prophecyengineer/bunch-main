@@ -3,7 +3,13 @@ import type { NextPage } from "next";
 import styles from "./Profile.module.css";
 import React, { useRef } from "react";
 import { useSession } from "next-auth/react";
-import { Photo, MessageCircle, Settings, Lock } from "tabler-icons-react";
+import {
+  Photo,
+  MessageCircle,
+  Settings,
+  Lock,
+  Router,
+} from "tabler-icons-react";
 
 import {
   Modal,
@@ -19,6 +25,8 @@ import {
   Avatar,
   List,
   Title,
+  Group,
+  UnstyledButton,
 } from "@mantine/core";
 import "react-activity-feed/dist/index.css";
 import {
@@ -33,10 +41,13 @@ import {
   ActivityProps,
   UserBar,
 } from "react-activity-feed";
+import router, { useRouter } from "next/router";
+
 import { useState, useEffect } from "react";
 import { useUserState } from "../../context/user";
 import { ImageUploadItem } from "antd-mobile/es/components/image-uploader";
 import { Web3Storage } from "web3.storage";
+import Link from "next/link";
 
 const axios = require("axios").default;
 
@@ -52,30 +63,13 @@ const Profile: NextPage = (props) => {
   const { user } = useUserState();
   const session = useSession();
   console.log("session", user);
-
   const stream = require("getstream");
   const userToken = session.data?.user?.userToken;
   const client = stream.connect(apiKey, userToken, appId);
   const [followersVisible, setFollowersVisible] = useState(false);
   const [followingVisible, setFollowingVisible] = useState(false);
-  const [visible, setVisible] = useState(false);
-  const [file, setFile] = useState("");
-  const demoSrc =
-    "https://images.unsplash.com/photo-1567945716310-4745a6b7844b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=300&q=60";
 
-  function getAccessToken() {
-    // If you're just testing, you can paste in a token
-    // and uncomment the following line:
-    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDdiREVlNjRmQWY5RmJGOEQ3QTM2MzAyNjY5QkY0OTE0MEJmMDFlZTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NTY0NjI3MDg5ODEsIm5hbWUiOiJidW5jaCJ9.OwG3jsLnWHWRR_FtnUEwQHyHzzBr1KRo1HVbikiyrb8";
-
-    // In a real app, it's better to read an access token from an
-    // environement variable or other configuration that's kept outside of
-    // your code base. For this to work, you need to set the
-    // WEB3STORAGE_TOKEN environment variable before you run your code.
-    // return process.env.WEB3STORAGE_TOKEN;
-  }
-
-  const web3client = new Web3Storage({ token: getAccessToken() });
+  const router = useRouter();
 
   // const handleUpload = async () => {
   //   const imageData = ref.current.files[0].name;
@@ -105,16 +99,6 @@ const Profile: NextPage = (props) => {
   // const handleBioChange = (value: React.SetStateAction<never[]>) => {
   //   setBio(value);
   // };
-
-  // function to to change fields to be editable
-  const editProfile = () => {
-    setReadOnlyEditState(false);
-  };
-
-  // function to change state of save profile
-  const saveProfile = () => {
-    setReadOnlyEditState(true);
-  };
 
   const onFinish = async (values: any) => {
     const username = user.id;
@@ -193,17 +177,14 @@ const Profile: NextPage = (props) => {
   //   UserFollowers();
   // };
 
+  const getIframe = (props) => {
+    console.log("JSON.parse(props?.activity?.object)", props?.activity?.object);
+    return JSON.parse(props?.activity?.object)?.iframe;
+  };
+
   return (
     <>
-      <div className={styles.container}>
-        {/* <Button
-          onClick={() => {
-            saveProfile();
-          }}
-        >
-          edit profile
-        </Button> */}
-
+      <div>
         {readOnlyEditState ? (
           <>
             <Avatar className={styles.avatar} src={user?.data?.image}></Avatar>
@@ -294,16 +275,12 @@ const Profile: NextPage = (props) => {
               </Popup> */}
             </>
 
-            <Card bodyClassName={styles.customBody}>
+            <Card>
               {readOnlyEditState ? (
                 <>
-                  <Button
-                    onClick={() => {
-                      editProfile();
-                    }}
-                  >
-                    Edit Profile
-                  </Button>
+                  <Link href="/profile/EditProfile">
+                    <Button>Edit Profile</Button>
+                  </Link>
                 </>
               ) : (
                 <h1>hey im here</h1>
@@ -385,17 +362,43 @@ const Profile: NextPage = (props) => {
                       }
 
                       return (
-                        <Activity
-                          {...props}
-                          // data={{ name: props.activity.actor.data.id }}
-                          activity={activity?.activity || props.activity}
-                          Header={() => (
-                            <>
-                              <List>
-                                <List.Item
-                                  key="1"
-                                  extra={
+                        <Card shadow="sm" p="md">
+                          <Activity
+                            className={styles.activity}
+                            {...props}
+                            // data={{ name: props.activity.actor.data.id }}
+                            activity={activity?.activity || props.activity}
+                            Header={() => (
+                              <>
+                                <Grid>
+                                  <Grid.Col span={9}>
+                                    <UnstyledButton
+                                      onClick={() =>
+                                        router.push(
+                                          "/" + `${props.activity.actor.id}`
+                                        )
+                                      }
+                                    >
+                                      <Group>
+                                        <Avatar
+                                          size={43}
+                                          src={props.activity.actor.data.image}
+                                        />
+                                        <div>
+                                          <Text>
+                                            {props.activity.actor.data.name}
+                                          </Text>
+                                          <Text size="xs" color="gray">
+                                            @{props.activity.actor.id}
+                                          </Text>
+                                        </div>
+                                      </Group>
+                                    </UnstyledButton>
+                                  </Grid.Col>
+
+                                  <Grid.Col span={2}>
                                     <Button
+                                      size="xs"
                                       onClick={async () => {
                                         const username = user.id;
                                         const client = stream.connect(
@@ -416,28 +419,30 @@ const Profile: NextPage = (props) => {
                                         console.log("removed", removed);
                                       }}
                                     >
-                                      <MoreOutline />
+                                      delete
                                     </Button>
-                                  }
-                                  prefix={
-                                    <Avatar
-                                      src={props.activity.actor.data.image}
-                                    />
-                                  }
-                                  description={props.activity.actor.id}
-                                >
-                                  {props.activity.actor.data.name}
-                                </List.Item>
-                              </List>
-                            </>
-                          )}
-                          Footer={() => (
-                            <div style={{ padding: "8px 16px" }}>
-                              <LikeButton {...props} />
-                              <CommentList activityId={props.activity.id} />
-                            </div>
-                          )}
-                        />
+                                  </Grid.Col>
+                                </Grid>
+                              </>
+                            )}
+                            Content={() => (
+                              <>
+                                <Space h="sm" />
+                                {/* {props?.activity?.object.media && (
+                                  <img src={props?.activity?.object?.media} />
+                                )} */}
+                                <img src={getIframe(props)} />
+                                <Text>{props?.activity?.object}</Text>
+                              </>
+                            )}
+                            Footer={() => (
+                              <div>
+                                <LikeButton {...props} />
+                                <CommentList activityId={props.activity.id} />
+                              </div>
+                            )}
+                          />
+                        </Card>
                       );
                     }}
                   />
@@ -449,152 +454,11 @@ const Profile: NextPage = (props) => {
                 icon={<Lock size={18} strokeWidth={1} color={"white"} />}
               >
                 <div className={styles.private} />
-                <StreamApp apiKey={apiKey} appId={appId} token={userToken}>
-                  <FlatFeed
-                    notify
-                    feedGroup="private"
-                    Activity={(props) => {
-                      let activity;
-                      if (props.activity?.actor?.data) {
-                        activity = {
-                          activity: {
-                            //give
-                            ...props.activity,
-                            actor: {
-                              data: {
-                                name: props.activity.actor.data.name,
-                              },
-                            },
-                          },
-                        } as ActivityProps;
-                      }
-
-                      return (
-                        <Activity
-                          {...props}
-                          // data={{ name: props.activity.actor.data.id }}
-                          activity={activity?.activity || props.activity}
-                          Header={() => (
-                            <>
-                              <List>
-                                <List.Item
-                                  key="1"
-                                  extra={
-                                    <Button
-                                      onClick={async () => {
-                                        const username = user.id;
-                                        const client = stream.connect(
-                                          apiKey,
-                                          userToken,
-                                          appId
-                                        );
-
-                                        const feed = client.feed(
-                                          "private",
-                                          username
-                                        );
-
-                                        const removed =
-                                          await feed.removeActivity(
-                                            props.activity.id
-                                          );
-                                        console.log("removed", removed);
-                                      }}
-                                    >
-                                      <MoreOutline />
-                                    </Button>
-                                  }
-                                  prefix={
-                                    <Avatar
-                                      src={props.activity.actor.data.image}
-                                    />
-                                  }
-                                  description={props.activity.actor.id}
-                                >
-                                  {props.activity.actor.data.name}
-                                </List.Item>
-                              </List>
-                            </>
-                          )}
-                          Footer={() => (
-                            <div style={{ padding: "8px 16px" }}>
-                              <LikeButton {...props} />
-                              <CommentList activityId={props.activity.id} />
-                            </div>
-                          )}
-                        />
-                      );
-                    }}
-                  />
-                </StreamApp>
               </Tabs.Tab>
             </Tabs>
           </>
         ) : (
-          <>
-            <div className={styles.userDetails} justify="center">
-              {/* <Form name="form" onFinish={onFinish}>
-                <div>
-                  <div className="spacer-medium"></div>
-                  <AutoCenter>
-                    <Avatar
-                      className={styles.avatar}
-                      src={image}
-                      onClick={() => {}}
-                      style={{ "--size": "120px" }}
-                    ></Avatar>
-                  </AutoCenter>
-                  <div>
-                    <AutoCenter>
-                      <PicUploader />
-                    </AutoCenter>
-                  </div>
-                </div>
-                <div className="spacer-medium"></div>
-
-                <Button
-                  size="large"
-                  block
-                  onClick={() => {
-                    handleUpload();
-                  }}
-                >
-                  upload image
-                </Button>
-                <div className="spacer-medium"></div>
-
-                <Form.Item
-                  rules={[{ required: true }]}
-                  label="name"
-                  help="please type your name : John Doe "
-                >
-                  <Input
-                    type="text"
-                    value={name}
-                    onChange={handleNameChange}
-                    placeholder="Elon Musk"
-                  />
-                </Form.Item>
-                <Form.Item
-                  rules={[{ required: true }]}
-                  label="bio"
-                  help="write a cool bio about you "
-                >
-                  <TextArea
-                    value={bio}
-                    onChange={handleBioChange}
-                    placeholder="I am a human I like to do human things 🌍 👽"
-                  />
-                </Form.Item>
-
-                <></>
-
-                <Button block type="submit" color="primary" size="large">
-                  Submit
-                </Button>
-              </Form> */}
-            </div>
-          </>
+          <></>
         )}
       </div>
     </>

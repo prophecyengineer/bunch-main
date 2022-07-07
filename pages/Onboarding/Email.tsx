@@ -38,7 +38,7 @@ const Email = () => {
     signIn("credentials", {
       username,
       password,
-      callbackUrl: `${window.location.origin}/Onboarding/Profile`,
+      callbackUrl: `${window.location.origin}/profile/EditProfile`,
       redirect: false,
     })
       .then(function (result) {
