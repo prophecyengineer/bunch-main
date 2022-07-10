@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  userId       Int      @id @default(autoincrement())
-  registeredAt DateTime @default(now())
-  username     String   @unique
-  name         String   @db.VarChar(250)
-  email        String   @unique
-  image        String   @db.VarChar(250)
-  bio          String   @db.VarChar(250)
-  password     String   @db.VarChar(250)
-  userToken    String   @db.VarChar(250)
-  stripeToken  String   @db.VarChar(250)
-  isActive     String   @default("1") @db.Char(1)
+  userId        Int       @id @default(autoincrement())
+  registeredAt  DateTime  @default(now())
+  username      String    @unique
+  name          String    @db.VarChar(250)
+  email         String    @unique
+  emailVerified DateTime?
+  image         String    @db.VarChar(250)
+  bio           String    @db.VarChar(250)
+  password      String    @db.VarChar(250)
+  userToken     String    @db.VarChar(250)
+  stripeToken   String    @db.VarChar(250)
+  isActive      String    @default("1") @db.Char(1)
 }

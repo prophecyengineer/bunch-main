@@ -12,6 +12,8 @@ export default async (req, res) => {
 
   const user1 = client.feed("user", "milakunis");
 
+  const video =
+    "https://bafybeib27pf2q4tmgms6tptydylwdvisi43e3cdklmebz364dbjkru6jj4.ipfs.dweb.link/file.mp4";
   //  const currentUser = client.feed("timeline", req.params.username);
   if (req.method === "POST") {
     const { title, image } = req.body;
@@ -21,7 +23,7 @@ export default async (req, res) => {
     const activity = {
       verb: "run",
       title: title,
-      object: JSON.stringify({ iframe: image }),
+      object: JSON.stringify({ iframe: image, video: video }),
       course: { name: "Golden Gate park", distance: 10 },
       participants: ["Thierry", "Tommaso"],
       started_at: new Date(),

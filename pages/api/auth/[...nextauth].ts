@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { NextApiRequest, NextApiResponse } from "next";
 let userAccount = null;
+import EmailProvider from "next-auth/providers/email";
 
 const prisma = new PrismaClient();
 
@@ -25,6 +26,48 @@ const configuration = {
     maxAge: 30 * 24 * 60 * 60,
   },
   providers: [
+    EmailProvider({
+      server: process.env.EMAIL_SERVER,
+      from: process.env.EMAIL_FROM,
+      maxAge: 5 * 60,
+      generateVerificationToken: async () => {
+        const token = await generateAuthtoken();
+        return token;
+      },
+      sendVerificationRequest: ({
+        identifier: email,
+        url,
+        token,
+        baseUrl,
+        provider,
+      }) => {
+        return new Promise((resolve, reject) => {
+          const { server, from } = provider;
+          // Strip protocol from URL and use domain as site name
+          const site = baseUrl.replace(/^https?:\/\//, "");
+
+          nodemailer.createTransport(server).sendMail(
+            {
+              to: email,
+              from,
+              subject: `Authentication code: ${token}`,
+              text: text({ url, site, email, token }),
+              html: html({ url, site, email, token }),
+            },
+            (error) => {
+              if (error) {
+                // logger.error('SEND_VERIFICATION_EMAIL_ERROR', email, error);
+                console.error("SEND_VERIFICATION_EMAIL_ERROR", email, error);
+                return reject(
+                  new Error(`SEND_VERIFICATION_EMAIL_ERROR ${error}`)
+                );
+              }
+              return resolve();
+            }
+          );
+        });
+      },
+    }),
     CredentialsProvider({
       id: "credentials",
       name: "credentials",
@@ -82,7 +125,7 @@ const configuration = {
     },
   },
   pages: {
-    signIn: "/", //Need to define custom login page (if using)
+    signIn: "/login", //Need to define custom login page (if using)
   },
 };
 

@@ -18,6 +18,7 @@ export default function Wrapper(props) {
     router.pathname === "/signin" ||
     router.pathname === "/Onboarding/Email" ||
     router.pathname === "/Onboarding/Username" ||
+    router.pathname === "/login" ||
     router.pathname === "/Onboarding/Profile"
   ) {
     return <PreLoginShell>{props.children}</PreLoginShell>;
